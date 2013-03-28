@@ -1,4 +1,4 @@
-# gaem-templage
+# gaem-template
 
 A Leiningen template for gaem-plugin-managed appengine-magic applications.
 
