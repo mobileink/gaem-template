@@ -15,7 +15,7 @@
                          (println "here we are in" *ns*))}
   :gae-sdk "{{sdk}}"
   :gae-app {:id "{{gae-app-id}}"
-            ;; using - prefix on version nbr forces use to customize
+            ;; using '-' prefix on version nbr forces user to customize
             :version  {:dev "-{{gae-app-version}}"
                        :test "-{{gae-app-version}}"
                        :prod "-{{gae-app-version}}"}
@@ -56,20 +56,15 @@
   :keep-non-project-classes false
   :omit-source true ;; default
   :jar-exclusions [#"^WEB-INF/appengine-generated.*$"]
-
   :dependencies [[org.clojure/clojure "1.5.1"]
                  [compojure "1.1.5"]
                  [ring/ring-core "1.2.0-beta1"]
                  [ring/ring-devel "1.2.0-beta1"]
                  [hiccup "1.0.2"]
                  [org.clojure/tools.logging "0.2.3"]
-                 ;; dev-deps not currently found on classpath, so put
-                 ;; ae here until a fix is found
                  [appengine-magic "0.5.1-SNAPSHOT"]]
   :dev-dependencies [[appengine-magic "0.5.1-SNAPSHOT"]]
   :profiles {:dev {:aot ^:replace []}
 ;;                   :prep-tasks ["gaem clean"]}
                    }
-  :plugins [[gaem "0.1.0-SNAPSHOT"]
-            ;; [appengine-magic "0.5.1-SNAPSHOT"]
-            ])
+  :plugins [[gaem "0.1.0-SNAPSHOT"]])
