@@ -20,6 +20,9 @@ webapp development on GAE and appengine-magic.  You can easily
 subtract stuff if you want to use it as a starting point for a real
 app.
 
+To understand it you should carefully examine project.clj.  Note the
+mustache templates in etc.
+
 It is designed to work with the gaem plugin which can be found at
 https://github.com/greynolds/gaem.
 
