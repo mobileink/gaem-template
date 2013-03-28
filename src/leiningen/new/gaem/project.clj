@@ -20,7 +20,7 @@
                        :test "-{{gae-app-version}}"
                        :prod "-{{gae-app-version}}"}
             :servlets [{{#servlets}}{:name "{{name}}", :class "{{class}}",
-                       :services [{{#services}}{:svcname {{svcname}} :action {{action}} :path  "{{path}}"}
+                       :services [{{#services}}{:svcname "{{svcname}}" :url-pattern  "{{url-pattern}}"}
                                   {{/services}}]}
                        {{/servlets}}]
             :war "{{war}}"

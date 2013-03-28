@@ -28,12 +28,17 @@
                :raw-name appname
                :servlets [{:name appname, :class "request",
                            :services [{:svcname "request", :action "GET"
-                                       :path "/request/:rqst"}]}
+                                       :url-pattern "/request/*"
+                                       :route "/request:rqst"
+                                       :arg "rqst"}]}
                           {:name appname, :class "user",
                            :services [{:svcname "user", :action "GET"
-                                       :path "/user/:rqst"}
+                                       :url-pattern "/user/*"
+                                       :route "/user/:arg"
+                                       :arg "arg"}
                                       {:svcname "login", :action "GET"
-                                       :path "/_ah/login_required"}]}]
+                                       :url-pattern "/_ah/login_required"
+                                       :route "/_ah/login_required"}]}]
                :display-name (project-name appname)
                :project (project-name appname)
                :aots [{:aot (str appname ".request")}
