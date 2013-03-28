@@ -1,0 +1,127 @@
+(ns leiningen.new.gaem
+  (:require  [clojure.java.io :as io])
+  (:use [leiningen.new.templates :only [*dir* project-name
+                                        renderer multi-segment
+                                        sanitize-ns name-to-path
+                                        year ->files]]
+        [leiningen.core.main :only [abort]]))
+
+;; main template entry point
+(defn gaem
+  "A Leiningen template for a new gaem (appengine-magic) project"
+  [projname & args]
+  ;; projname syntax:  <clj-app>:<gae-app-id>
+  (do
+    (if (nil? args)
+      (do (abort "missing sdk path!  Syntax:  lein new gaem myproj path/to/sdk") )
+      (println args))
+    (let
+        [[appname appid] (.split  projname ":")
+         sdk (first args)
+         render (renderer "gaem")
+         main-ns (multi-segment (sanitize-ns appname))
+         data {:name appname ;; ":name" key required by leiningen
+               :appname appname
+               :version "0.1.0-SNAPSHOT"
+               :gae-app-id appid
+               :gae-app-version "0-1-0"
+               :raw-name appname
+               :servlets [{:name appname, :class "request",
+                           :services [{:svcname "request", :action "GET"
+                                       :path "/request/:rqst"}]}
+                          {:name appname, :class "user",
+                           :services [{:svcname "user", :action "GET"
+                                       :path "/user/:rqst"}
+                                      {:svcname "login", :action "GET"
+                                       :path "/_ah/login_required"}]}]
+               :display-name (project-name appname)
+               :project (project-name appname)
+               :aots [{:aot (str appname ".request")}
+                      {:aot (str appname ".user")}]
+               :namespace (str appname ".request")
+               :projroot (name-to-path appname) ;; foo-bar -> foo_bar
+               :welcome "index.html"
+               :sdk sdk
+               :war "war"
+               ;; we only install to src dirs, leave config to gaem plugin
+               :statics_src "src/main/public"
+               :resources_src "src/main/resource"
+               :year (year)
+               :proj-url "http://example.com/FIXME"
+               :nested-dirs (name-to-path main-ns) ;; foo-bar.core -> foo_bar/core
+               :threads true
+               :sessions true
+               :java-logging "logging.properties"
+               :log4j-logging "log4j.properties"}]
+      (println "Generating an appengine-magic project called " appname ", app id " appid ", using the 'gaem' template.")
+
+;      (println "Generating servlet skeletons")
+      (doseq [servlet (:servlets data)]
+        (do ;(println servlet)
+            (binding [*dir* (.getPath (io/file
+                                       (System/getProperty
+                                        "leiningen.original.pwd")
+                                       (:name servlet)))]
+              (->files servlet
+                       ["src/{{name}}/{{class}}.clj"
+                        (render "servlet.clj" servlet)]))))
+
+;      (println "Generating other stuff")
+      (binding [*dir* (.getPath (io/file (System/getProperty "leiningen.original.pwd") (:name data)))]
+        (->files data
+                 ;; to file  		from template
+                 ["project.clj" (render "project.clj" data)]
+                 ["README.md" (render "README.md" data)]
+                 ["doc/intro.md" (render "intro.md" data)]
+                 [".gitignore" (render "gitignore" data)]
+
+                 ;; NB: treatment of '-', '_', '/', and '.'
+                 ;; "lein new appengine-magic foo-bar" yields:
+                 ;; src:  ns foo-bar.core in  src/foo_bar/core.clj
+                 ;; ["src/{{nested-dirs}}.clj" (render "core.clj" data)]
+
+                 ;; ;; test: foo-bar.core-test -> foo_bar/core_test.clj
+                 ["test/{{nested-dirs}}_test.clj" (render "core_test.clj" data)]
+
+                 ;; app engine config files
+                 ;; copy template w/o macro processing ('data' arg)
+                 ;; install in hidden dir?  or etc?
+                 ;; [".{{appname}}/appengine-web.xml.mustache"
+                 ["etc/appengine-web.xml.mustache"
+                  (render "appengine-web.xml.mustache")]
+                 ["etc/web.xml.mustache"
+                  (render "web.xml.mustache")]
+
+                 ;; resources install to source tree
+                 ;; gaem plugin "config" task will copy to war tree
+
+                 ["{{statics_src}}/html/{{welcome}}"
+                  (render "index.html" (conj {:loc "Home"} data))]
+                 ["{{statics_src}}/404.html"
+                  (render "404.html" data)]
+
+                 ["{{statics_src}}/html/a/{{welcome}}"
+                  (render "index.html" (conj {:loc "A"} data))]
+                 ["{{statics_src}}/html/b/{{welcome}}"
+                  (render "index.html" (conj {:loc "B"} data))]
+                 ["{{statics_src}}/request/{{welcome}}"
+                  (render "index.html" (conj {:loc "Request"} data))]
+                 ["{{statics_src}}/user/{{welcome}}"
+                  (render "index.html" (conj {:loc "User"} data))]
+
+                 ["{{statics_src}}/css/{{project}}.css"
+                  (render "project.css" data)]
+                 ["{{statics_src}}/js/{{project}}.js"
+                  (render "project.js" data)]
+                 ["{{resources_src}}/favicon.ico"
+                  (render "favicon.ico" data)]
+
+                 ["etc/{{java-logging}}" (render "logging.properties" data)]
+                 ["etc/{{log4j-logging}}" (render "log4j.properties" data)]
+
+                 ;; templates?
+                 ;; ["private/hiccup/{{appname}}.???" (render "..." data)]
+
+                 ;; TODO: add a spinner, favicon, or other toy graphic
+                 ;; ["public/img/{{appname}}.js" (render "public/img/foo.png" data)]
+               )))))

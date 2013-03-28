@@ -1,0 +1,36 @@
+Tasks:
+
+    * validate - check xml config files
+
+    * templates: let gaem config handle generation of index.html using
+      template.  i.e. copy template to etc, then gaem config uses
+      something from project.clj to decide which stuff to generate?
+
+      better, migrate the template stuff out of gaem and into
+      "lein-stencil".  The "lein stencil" task should find the stencil
+      templates and data in the source tree and process as
+      appropriate.  Conventions:
+
+          foo.html.stencil
+	  bar.html.stencil
+          stencil.data  <<- data or all stencils in same dir
+
+      So lein stencil looks for files according to that naming
+      convention.  stencil.data may contain a :stencil stanza to
+      control processing, e.g. with a :dest item.  The default is, if
+      there is no stencil.dest item, the dest structure should match
+      the source structure.  E.g.  src/html/foo.html.stencil goes to
+      war/html/foo.html.
+
+      the :stencil stanza can also indicate which stencils the data is
+      intended for, as a qa check (e.g. in case files get moved).
+      This is necessary since the name "stencil.data" is the same
+      across directories.  We could also support "foo.stencil.data",
+      but then we could have multiple such files per dir, and we'd
+      have to figure out what goes with what.  Let's keep it simple:
+      one stencil.data file per directory.
+
+      So instead of having gaem config deal with this stuff, offload
+      it to another plugin.  gaem-template will prepopulate some
+      vanilla stuff, e.g. index.html.stencil.
+
