@@ -14,10 +14,10 @@
 
 (defroutes {{class}}-routes
 {{#services}}
-  (GET "{{route}}" [{{arg}}]
+  (GET "{{route}}" [{{#arg}}{{var}}{{/arg}}]
     {:status 200
      :headers {"Content-Type" "text/html"}
-     :body (format "This is the <i>{{action}} {{svcname}}</i> service of the <i><b>{{name}}.{{class}}</b></i> servlet.  Now serving <i>%s</i>." {{arg}})})
+     :body (format "This is the <i>{{action}} {{svcname}}</i> service of the <i><b>{{name}}.{{class}}</b></i> servlet. {{#arg}}  Now serving <i>%s</i>." {{var}}{{/arg}}{{^arg}}"{{/arg}})})
 
 {{/services}}
 

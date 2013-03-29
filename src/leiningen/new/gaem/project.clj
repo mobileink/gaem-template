@@ -46,7 +46,7 @@
                         ;; :exclude {:pattern "bar/**"}
                         }
             }
-  :aot [{{#aots}}{{aot}} {{/aots}}]
+  :aot [{{#aots}}{{aot}} {{/aots}} *]
   :compile-path "{{war}}/WEB-INF/classes"
   :target-path "{{war}}/WEB-INF/lib"
   :uberjar-exclusions [#"META-INF/DUMMY.SF"
@@ -61,10 +61,6 @@
                  [ring/ring-core "1.2.0-beta1"]
                  [ring/ring-devel "1.2.0-beta1"]
                  [hiccup "1.0.2"]
-                 [org.clojure/tools.logging "0.2.3"]
-                 [appengine-magic "0.5.1-SNAPSHOT"]]
-  :dev-dependencies [[appengine-magic "0.5.1-SNAPSHOT"]]
-  :profiles {:dev {:aot ^:replace []}
-;;                   :prep-tasks ["gaem clean"]}
-                   }
+                 [org.clojure/tools.logging "0.2.3"]]
+  :profiles {:dev {:dependencies [[appengine-magic "0.5.1-SNAPSHOT"]]}}
   :plugins [[gaem "0.1.0-SNAPSHOT"]])

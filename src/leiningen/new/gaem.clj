@@ -29,13 +29,13 @@
                :servlets [{:name appname, :class "request",
                            :services [{:svcname "request", :action "GET"
                                        :url-pattern "/request/*"
-                                       :route "/request:rqst"
-                                       :arg "rqst"}]}
+                                       :route "/request/:rqst"
+                                       :arg {:var "rqst"}}]}
                           {:name appname, :class "user",
                            :services [{:svcname "user", :action "GET"
                                        :url-pattern "/user/*"
                                        :route "/user/:arg"
-                                       :arg "arg"}
+                                       :arg {:var "arg"}}
                                       {:svcname "login", :action "GET"
                                        :url-pattern "/_ah/login_required"
                                        :route "/_ah/login_required"}]}]
@@ -100,8 +100,11 @@
                  ;; resources install to source tree
                  ;; gaem plugin "config" task will copy to war tree
 
+                 ["{{statics_src}}/{{welcome}}"
+                  (render "home.html" (conj {:loc "Home"} data))]
+
                  ["{{statics_src}}/html/{{welcome}}"
-                  (render "index.html" (conj {:loc "Home"} data))]
+                  (render "index.html" (conj {:loc "HTML"} data))]
                  ["{{statics_src}}/404.html"
                   (render "404.html" data)]
 
