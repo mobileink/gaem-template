@@ -63,4 +63,4 @@
                  [hiccup "1.0.2"]
                  [org.clojure/tools.logging "0.2.3"]]
   :profiles {:dev {:dependencies [[appengine-magic "0.5.1-SNAPSHOT"]]}}
-  :plugins [[gaem "0.1.0-SNAPSHOT"]])
+  :plugins [[gaem "0.2.0-SNAPSHOT"]])
