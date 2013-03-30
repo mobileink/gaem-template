@@ -5,14 +5,17 @@
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :repl-options {:port 4005
-                 :init-ns {{name}}.core
                  :init (do
                          (require '[appengine-magic.core :as ae])
-                         (in-ns '{{name}}.user)
-                         (clojure.core/compile '{{name}}.request)
-                         (clojure.core/compile '{{name}}.user)
-                         (ae/start {{name}}-user)
-                         (println "here we are in" *ns*))}
+                         (load-file "src/test/request.clj")
+                         (load-file "src/test/user.clj")
+                         (defn request []
+                           (do (load-file "src/test/request.clj")
+                               (ae/serve test.request/test-request)))
+                         (defn user []
+                           (do (load-file "src/test/user.clj")
+                               (ae/serve test.user/test-user)))
+                         (user))}
   :gae-sdk "{{sdk}}"
   :gae-app {:id "{{gae-app-id}}"
             ;; using '-' prefix on version nbr forces user to customize
