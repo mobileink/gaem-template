@@ -7,14 +7,12 @@
   :repl-options {:port 4005
                  :init (do
                          (require '[appengine-magic.core :as ae])
-                         (load-file "src/test/request.clj")
-                         (load-file "src/test/user.clj")
-                         (defn request []
-                           (do (load-file "src/test/request.clj")
-                               (ae/serve test.request/test-request)))
-                         (defn user []
-                           (do (load-file "src/test/user.clj")
-                               (ae/serve test.user/test-user)))
+{{#servlets}}
+                         (load-file "src/{{name}}/{{class}}.clj")
+                         (defn {{class}} []
+                           (do (load-file "src/{{name}}/{{class}}.clj")
+                               (ae/serve {{name}}.{{class}}/{{name}}-{{class}})))
+{{/servlets}}
                          (user))}
   :gae-sdk "{{sdk}}"
   :gae-app {:id "{{gae-app-id}}"
