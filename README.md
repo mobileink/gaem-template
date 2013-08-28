@@ -1,4 +1,6 @@
-# gaem-template
+# DEPRECATED use migae-template instead
+
+gaem-template
 
 A Leiningen template for gaem-plugin-managed appengine-magic applications.
 
