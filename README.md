@@ -1,4 +1,6 @@
-# DEPRECATED use migae-template instead
+# DEPRECATED - moved to [migae](https://github.com/migae)
+
+use migae-template instead
 
 gaem-template
 
